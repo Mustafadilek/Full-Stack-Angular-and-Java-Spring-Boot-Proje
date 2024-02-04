@@ -11,7 +11,7 @@ for(let tempSport of sportsOne){
         console.log(tempSport + " << My Favor,te");
     }
     else{
-        console.log(tempSport);;
+        console.log(tempSport);
     }
     
 }
