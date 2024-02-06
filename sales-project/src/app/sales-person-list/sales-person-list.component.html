@@ -1,0 +1,26 @@
+<table class="table table-hover">
+    <thead class="table-dark">
+        <tr >
+            <td> First Name</td>
+            <td>Last Name</td>
+            <td>Email</td>
+            <td>Sales Volume</td>
+            <td>Met Quota ?</td>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let list of salesPersonlist" [ngClass]="{'highlight': list.salesVolume >= 6000}" >
+            <td> {{list.firstName}} </td>
+            <td>{{list.lastName}}</td>
+            <td>{{list.email}}</td>
+            <td>{{list.salesVolume | currency:'USD'}}</td> 
+            <!-- Setting the currency as USD-->
+            
+            <td>  <!--filtering related to salesVolume-->
+                <div *ngIf="list.salesVolume>6000; else myElseBlock">Yes</div>
+                <ng-template #myElseBlock>No</ng-template>
+            </td>
+        </tr>
+    </tbody>
+</table>
