@@ -16,6 +16,7 @@ export class ProductListComponent implements OnInit {
   products: Product[]=[];
   currentCategoryId:number=1;
   currentCategoryName:string="";
+  searchMode: boolean=false;
 
   constructor(private productService: ProductService,
               private route:ActivatedRoute) { }
@@ -29,24 +30,52 @@ export class ProductListComponent implements OnInit {
 
   listProducts(){
 
-    // check if "id" paramter is available
-    const hasCategory: boolean= this.route.snapshot.paramMap.has('id');
+    this.searchMode=this.route.snapshot.paramMap.has('keyword');
+    if(this.searchMode){
+      this.handleSearchProducts();
 
-    if(hasCategory){
-      // get the "id" param string. convert string to a number using the "+" syambol
-        this.currentCategoryId= +this.route.snapshot.paramMap.get('id')!;
-        this.currentCategoryName= this.route.snapshot.paramMap.get('name')!;
     }
     else{
-      this.currentCategoryId=1;
-      this.currentCategoryName = 'Books';
-    }
+      this.handleListProduscts();
 
-    this.productService.getProducList(this.currentCategoryId).subscribe(
-      data=>{
-        this.products=data;
-      }
-    );
+    }
+      
+   
+  }
+
+  handleSearchProducts(){
+
+  const theKeyWord=this.route.snapshot.paramMap.get('keyword')!;
+
+  this.productService.searchProducts(theKeyWord).subscribe(
+    data=>{
+      this.products=data;
+    }
+    
+  );
+
+
+  }
+
+  handleListProduscts(){
+     // check if "id" paramter is available
+     const hasCategory: boolean= this.route.snapshot.paramMap.has('id');
+
+     if(hasCategory){
+       // get the "id" param string. convert string to a number using the "+" syambol
+         this.currentCategoryId= +this.route.snapshot.paramMap.get('id')!;
+         this.currentCategoryName= this.route.snapshot.paramMap.get('name')!;
+     }
+     else{
+       this.currentCategoryId=1;
+       this.currentCategoryName = 'Books';
+     }
+ 
+     this.productService.getProducList(this.currentCategoryId).subscribe(
+       data=>{
+         this.products=data;
+       }
+     );
   }
 
 
