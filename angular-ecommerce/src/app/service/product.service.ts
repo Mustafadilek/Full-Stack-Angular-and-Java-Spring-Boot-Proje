@@ -10,7 +10,7 @@ import { ProductCategory } from '../common/product-category';
   providedIn: 'root'
 })
 export class ProductService {
-  
+ 
 
   
   private baseUrl= 'http://localhost:8090/api/products';
@@ -19,7 +19,12 @@ export class ProductService {
   constructor(private httpclient: HttpClient) { }
 
 
-
+  getProduct(theProductId: number): Observable<Product> {
+    const productUrl=`${this.baseUrl}/${theProductId}`;
+    return this.httpclient.get<Product>(productUrl);
+  
+  }
+  
   // Returns an observable. Map the JSON data from Spring Data to Product array
   getProducList(theCategoryId:number): Observable<Product[]>{
 
