@@ -16,7 +16,16 @@ export class ProductListComponent implements OnInit {
   products: Product[]=[];
   currentCategoryId:number=1;
   currentCategoryName:string="";
+  previousCategoryId: number=1;
   searchMode: boolean=false;
+
+  // new properties for pagination
+  thePageNumber:number=1;
+  thePageSize:number=5;
+  theTotalElements:number=0;
+
+  previousKeyword:string="";  
+
 
   constructor(private productService: ProductService,
               private route:ActivatedRoute) { }
@@ -25,6 +34,8 @@ export class ProductListComponent implements OnInit {
     this.route.paramMap.subscribe(()=>{
       this.listProducts();
     });
+
+    
     
   }
 
@@ -47,15 +58,28 @@ export class ProductListComponent implements OnInit {
 
   const theKeyWord=this.route.snapshot.paramMap.get('keyword')!;
 
-  this.productService.searchProducts(theKeyWord).subscribe(
-    data=>{
-      this.products=data;
-    }
-    
-  );
+
+  // if we have a different keyword than previous
+  // then set thePageNumber to 1
+   if(this.previousKeyword!=theKeyWord){
+    this.thePageNumber=1;
+   }
+
+   this.previousKeyword=theKeyWord;
+
+  this.productService.searchProductsPaginate(this.thePageNumber-1,
+                                              this.thePageSize,
+                                              theKeyWord).subscribe(this.processResult());
 
 
   }
+  updatePageSize(value:string){
+    this.thePageSize=parseInt(value);
+    this.thePageNumber=1;
+    this.listProducts();
+
+  }
+
 
   handleListProduscts(){
      // check if "id" paramter is available
@@ -70,14 +94,37 @@ export class ProductListComponent implements OnInit {
        this.currentCategoryId=1;
        this.currentCategoryName = 'Books';
      }
+
+     // Check if we have a different category than previous
+     // Note: Angular will reuse a component if it is currently being viewed.
+
+
+     // if we have a different category id than previous
+     // then set thePageNumber back to 1.
+     if(this.previousCategoryId != this.currentCategoryId){
+      this.thePageNumber=1;
+     }
+
+     this.previousCategoryId=this.currentCategoryId;
+     console.log(`currentCategoryId=${this.currentCategoryId}, thePageNumber=${this.thePageNumber}`);
+
  
-     this.productService.getProducList(this.currentCategoryId).subscribe(
-       data=>{
-         this.products=data;
-       }
-     );
+     this.productService.getProductListPaginate( this.thePageNumber-1,
+                                                this.thePageSize,
+                                                this.currentCategoryId).subscribe(this.processResult() );
   }
 
+  processResult(){
+
+    return(data: any)=>{
+      this.products=data._embedded.products;
+      this.thePageNumber=data.page.number +1;
+      this.thePageSize=data.page.size;
+      this.theTotalElements= data.page.totalElements;
+    }
+
+  }
+  
 
 
 }
