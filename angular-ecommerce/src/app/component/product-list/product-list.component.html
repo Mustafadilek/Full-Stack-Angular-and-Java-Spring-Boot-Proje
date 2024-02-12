@@ -16,7 +16,7 @@
                         </a>
                        
                         <div class="price">{{tempProducts.unitPrice | currency:'USD'}}</div>
-                        <a href="#" class="primary-btn" style="text-decoration:none"> Add to cart</a>
+                        <button class="btn btn-primary btn-sm" (click)="addToCart(tempProducts)">Add to cart</button>
                     </div>
                 </div>
                <!-- if products empty then display message -->
