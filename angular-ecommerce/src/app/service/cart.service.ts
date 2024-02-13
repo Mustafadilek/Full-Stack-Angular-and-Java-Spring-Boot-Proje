@@ -85,4 +85,22 @@ export class CartService {
     }
 
   }
+
+  remove(theCartItem: CartItem)
+  {
+    const index= this.cartItems.findIndex(
+      tempCartItem=> tempCartItem.id==theCartItem.id);
+      if(index>-1){
+        this.cartItems.splice(index,1);
+        this.computeCartTotals();
+      }
+  }
+  decrementQuantity(cart:CartItem){
+  cart.quantity--;
+  if(cart.quantity===0){
+    this.remove(cart);
+  }
+  else{this.computeCartTotals();
+  }
+}
 }
