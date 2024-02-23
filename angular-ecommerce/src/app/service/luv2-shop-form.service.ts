@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 })
 export class Luv2ShopFormService {
 
-  private countriesUrl=environment.luv2shopApiUrl + '/api/countries';
+  private countriesUrl=environment.luv2shopApiUrl + '/countries';
   private statesUrl=environment.luv2shopApiUrl + '/states';
 
 
